@@ -355,7 +355,7 @@ function gourl_jigoshop_gateway_load()
 	    /*
 	     * 5.3
 	    */
-	    function payment_fields() 
+	    public function payment_fields() 
 	    {
 			if ($this->description) echo wpautop(wptexturize($this->description));
 		}
@@ -517,7 +517,7 @@ function gourl_jigoshop_gateway_load()
 	    	$checkout_redirect = apply_filters( 'jigoshop_get_checkout_redirect_page_id', jigoshop_get_page_id('thanks') );
 			$url = add_query_arg( 'key', $order->order_key, add_query_arg( 'order', $order->id, get_permalink( $checkout_redirect ) ) );
 	    	
-	    	$order->add_order_note(sprintf(__('Awaiting Cryptocurrency Payment. Full Order ID: %s with total %s', GOURLJI), 'order'.$order->id.'_'.str_replace('order_', '', $order->order_key), $order->order_total . " " . $currency));
+	    	$order->add_order_note(sprintf(__('Awaiting Cryptocurrency Payment. Full Order ID: <b>%s</b> with total %s', GOURLJI), 'order'.$order->id.'_'.str_replace('order_', '', $order->order_key), $order->order_total . " " . $currency));
 	    	
 	    	return array(
 	    			'result' 	=> 'success',
@@ -536,9 +536,13 @@ function gourl_jigoshop_gateway_load()
 	    {
 	    	if (!in_array($box_status, array("cryptobox_newrecord", "cryptobox_updated"))) return false;
 	    	
+	    	$origID = $order_id;
+	    	
 	    	if (strpos($order_id, "order") === 0) $order_id = substr($order_id, 5); else return false;
 	    	
 	    	if (!$user_id || $payment_details["status"] != "payment_received") return false;
+	    	
+	    	list($order_id, $order_key) = explode( '_', $order_id );
 	    	
 	    	$order = new jigoshop_order( $order_id );  if ($order === false) return false;
 
@@ -548,36 +552,47 @@ function gourl_jigoshop_gateway_load()
 	    	$payID		= $payment_details["paymentID"];
 	    	$status		= ($payment_details["is_confirmed"]) ? $this->ostatus2 : $this->ostatus;
 	    	$confirmed	= ($payment_details["is_confirmed"]) ? __('Yes', GOURLJI) : __('No', GOURLJI);
-
-	    	
-
-	    	// Completed
-	    	if ($status == "completed") $order->payment_complete();
 	    	
 	    	
-	    	// Update Status
-	    	$order->update_status($status);
+	    	// Security	    	
+	    	$good = ('order_'.$order_key == $order->order_key) ? true : false;
+			
+	    	if ($good)
+	    	{	
+		    	// Completed
+		    	if ($status == "completed") $order->payment_complete();
+		    	
+		    	// Update Status
+		    	$order->update_status($status);
+	    	}
 	    	
 	    	
 	    	// New Payment Received
 	    	if ($box_status == "cryptobox_newrecord") 
 	    	{
-	    		$checkout_redirect = apply_filters( 'jigoshop_get_checkout_redirect_page_id', jigoshop_get_page_id('thanks') );
-	    		$url = add_query_arg( 'key', $order->order_key, add_query_arg( 'order', $order->id, get_permalink( $checkout_redirect ) ) );
-	    		$order->add_order_note(sprintf(__('%s Payment Received<br>%s<br>Payment <a href="%s">id %s</a> &#160; (<a href="%s">order page</a>)<br>Awaiting network confirmation...<br>', GOURLJI), $coinName, $amount, GOURL_ADMIN.GOURL."payments&s=payment_".$payID, $payID, $url."&gourlcryptocoin=".$payment_details["coinname"]));
-	    		
-	    		update_post_meta( $order->id, 'coinname', $coinName);
-	    		update_post_meta( $order->id, 'amount', $payment_details["amount"] . " " . $payment_details["coinlabel"] );
-	    		update_post_meta( $order->id, 'amountusd', $payment_details["amountusd"] . " USD" );
-	    		update_post_meta( $order->id, 'userid', $payment_details["userID"] );
-	    		update_post_meta( $order->id, 'country', get_country_name($payment_details["usercountry"]) );
-	    		update_post_meta( $order->id, 'tx', $payment_details["tx"] );
-	    		update_post_meta( $order->id, 'confirmed', $confirmed );
-	    		update_post_meta( $order->id, 'details', $payment_details["paymentLink"] );
+	    		if ($good)
+	    		{
+		    		$checkout_redirect = apply_filters( 'jigoshop_get_checkout_redirect_page_id', jigoshop_get_page_id('thanks') );
+		    		$url = add_query_arg( 'key', $order->order_key, add_query_arg( 'order', $order->id, get_permalink( $checkout_redirect ) ) );
+		    		$order->add_order_note(sprintf(__('%s Payment Received for Order ID: <b>%s</b><br>%s<br>Payment <a href="%s">id %s</a> &#160; (<a href="%s">order page</a>)<br>Awaiting network confirmation...<br>', GOURLJI), $coinName, $origID, $amount, GOURL_ADMIN.GOURL."payments&s=payment_".$payID, $payID, $url."&gourlcryptocoin=".$payment_details["coinname"]));
+		    		
+		    		update_post_meta( $order->id, 'coinname', $coinName);
+		    		update_post_meta( $order->id, 'amount', $payment_details["amount"] . " " . $payment_details["coinlabel"] );
+		    		update_post_meta( $order->id, 'amountusd', $payment_details["amountusd"] . " USD" );
+		    		update_post_meta( $order->id, 'userid', $payment_details["userID"] );
+		    		update_post_meta( $order->id, 'country', get_country_name($payment_details["usercountry"]) );
+		    		update_post_meta( $order->id, 'tx', $payment_details["tx"] );
+		    		update_post_meta( $order->id, 'confirmed', $confirmed );
+		    		update_post_meta( $order->id, 'details', $payment_details["paymentLink"] );
+	    		}
+	    		else
+	    		{
+	    			$order->add_order_note(sprintf(__('<b>IMPORTANT! %s Payment Received for Expired Order ID: %s</b><br><b>Please compare current order sum and paid sum below!</b><br>%s<br>Payment <a href="%s">id %s</a><br>Awaiting network confirmation...<br>', GOURLJI), $coinName, $origID, $amount, GOURL_ADMIN.GOURL."payments&s=payment_".$payID, $payID));
+	    		}	
 	    	}
 	    	
 	    	// Payment Confirmed
-	    	if ($box_status == "cryptobox_updated") update_post_meta( $order->id, 'confirmed', $confirmed );
+	    	if ($good && $box_status == "cryptobox_updated") update_post_meta( $order->id, 'confirmed', $confirmed );
 	    	
 	    	
 	    	// Existing Payment confirmed (6+ confirmations)
@@ -629,5 +644,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()       
+// end gourl_jigoshop_gateway_load()             
 
