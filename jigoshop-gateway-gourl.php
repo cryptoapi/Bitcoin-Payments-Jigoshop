@@ -151,7 +151,7 @@ function gourl_jigoshop_gateway_load()
 			$this->enabled      		= Jigoshop_Base::get_options()->get( GOURLJI.'enabled' );
 			$this->title        		= Jigoshop_Base::get_options()->get( GOURLJI.'title' );
 			$this->description  		= Jigoshop_Base::get_options()->get( GOURLJI.'description' );
-			$this->emultiplier  		= Jigoshop_Base::get_options()->get( GOURLJI.'emultiplier' );
+			$this->emultiplier  		= trim(str_replace("%", "", Jigoshop_Base::get_options()->get( GOURLJI.'emultiplier' )));
 			$this->ostatus  			= Jigoshop_Base::get_options()->get( GOURLJI.'ostatus' );
 			$this->ostatus2  			= Jigoshop_Base::get_options()->get( GOURLJI.'ostatus2' );
 			$this->deflang  			= Jigoshop_Base::get_options()->get( GOURLJI.'deflang' );
@@ -222,7 +222,7 @@ function gourl_jigoshop_gateway_load()
 	    	$method_description  	 = "<img style='float:left; margin-right:15px' src='".plugin_dir_url( __FILE__ )."gourlpayments.png'>";
 	    	$method_description  	.= __( '<a target="_blank" href="https://gourl.io/bitcoin-payments-jigoshop.html">Plugin Homepage &#187;</a>', GOURLJI ) . "<br>";
 	    	$method_description  	.= __( '<a target="_blank" href="https://github.com/cryptoapi/Bitcoin-Payments-Jigoshop">Plugin on Github - 100% Free Open Source &#187;</a>', GOURLJI ) . "<br><br>";
-	    	$method_description  	.= __( 'Accept Bitcoin, Litecoin, Dogecoin, Speedcoin, Darkcoin, Vertcoin, Reddcoin, Feathercoin, Vericoin, Potcoin payments online in Jigoshop.', GOURLJI ).'<br/>';
+	    	$method_description  	.= sprintf(__( 'Accept %s payments online in Jigoshop.', GOURLJI ), ($this->coin_names?ucwords(implode(", ", $this->coin_names)):"Bitcoin, Litecoin, Dogecoin, Speedcoin, Darkcoin, Vertcoin, Reddcoin, Feathercoin, Vericoin, Potcoin")).'<br/>';
 	    	
 	    	// Requirements
 	    	if (class_exists('gourlclass') && defined('GOURL') && defined('GOURL_ADMIN') && is_object($gourl))
@@ -289,7 +289,7 @@ function gourl_jigoshop_gateway_load()
 	    	$defaults[] = array(
 	    			'id' 		=> GOURLJI.'emultiplier',
 	    			'name'		=> __('Exchange Rate Multiplier', GOURLJI),
-	    			'desc' 		=> sprintf(__('The system uses the multiplier rate with today LIVE cryptocurrency exchange rates (updated every 30 minutes) when calculating from fiat currency (USD, EUR, etc) to %s. <br />Example: <b>1.05</b> - will add an extra 5%% to the total price in bitcoin/altcoins, <b>0.85</b> - 15%% discount for the price in bitcoin/altcoins. Default: 1.00 ', GOURLJI ), $coins),
+	    			'desc' 		=> sprintf(__('The system uses the multiplier rate with today LIVE cryptocurrency exchange rates (which are updated every 30 minutes) when the transaction is calculating from a fiat currency (e.g. USD, EUR, etc) to %s. <br />Example: <b>1.05</b> - will add an extra 5%% to the total price in bitcoin/altcoins, <b>0.85</b> - will be a 15%% discount for the price in bitcoin/altcoins. Default: 1.00 ', GOURLJI ), $coins),
 	    			'tip' 		=> '',
 	    			'std' 		=> '1.00',
 	    			'type' 		=> 'text'
@@ -298,7 +298,7 @@ function gourl_jigoshop_gateway_load()
 	    	$defaults[] = array(
 	    			'id' 		=> GOURLJI.'ostatus',
 	    			'name'		=> __('Order Status - Cryptocoin Payment Received', GOURLJI ),
-	    			'desc' 		=> sprintf(__("Payment received successfully from the customer. You will see the bitcoin/altcoin payment statistics in one common table <a href='%s'>'All Payments'</a> with details of all received payments.<br/>If you sell digital products / software downloads you can use the status 'Completed' showing that customer has instant access to your digital products", GOURLJI), $url2),
+	    			'desc' 		=> sprintf(__("Payment is received successfully from the customer. You will see the bitcoin/altcoin payment statistics in one common table <a href='%s'>'All Payments'</a> with details of all received payments.<br/>If you sell digital products / software downloads you can use the status 'Completed' showing that particular customer already has instant access to your digital products", GOURLJI), $url2),
 	    			'tip' 		=> '',
 	    			'std' 		=> 'processing',
 	    			'choices' 	=> $this->statuses,
@@ -308,7 +308,7 @@ function gourl_jigoshop_gateway_load()
 	    	$defaults[] = array(
 	    			'id' 		=> GOURLJI.'ostatus2',
 	    			'name'		=> __('Order Status - Previously Received Payment Confirmed', GOURLJI ),
-	    			'desc' 		=> __("About one hour after payment is received, the bitcoin transaction should get 6 confirmations (for other cryptocoins ~ 20-30min).<br>Transaction confirmation is needed to prevent double spending of the same money.", GOURLJI),
+	    			'desc' 		=> __("About one hour after the payment is received, the bitcoin transaction should get 6 confirmations (for transactions using other cryptocoins ~ 20-30min).<br>A transaction confirmation is needed to prevent double spending of the same money.", GOURLJI),
 	    			'tip' 		=> '',
 	    			'std' 		=> 'completed',
 	    			'choices' 	=> $this->statuses,
@@ -644,5 +644,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()             
+// end gourl_jigoshop_gateway_load()                 
 
