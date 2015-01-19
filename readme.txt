@@ -3,7 +3,7 @@ Contributors: gourl, GoUrl.io
 Plugin Name: GoUrl Jigoshop - Bitcoin Payment Gateway Processor
 Plugin URI: https://gourl.io/bitcoin-payments-jigoshop.html
 Author URI: https://gourl.io 
-Tags: jigoshop, bitcoin, bitcoins, bitcoin payment, bitcoin payments, paypal, woocommerce, osCommerce, gourl, google, bitstamp, cryptsy, jigoshop payment gateway, woocommerce payment gateway, btc, coinbase, wp ecommerce, bitpay, shopping cart, ecommerce, commerce, eshop, payment gateway, payment plugin, payment, e-commerce, ecommerce, fulfillment, woo commerce, wp e-commerce, credit, accept bitcoin, bitcoin payments, bitcoin plugin, bitcoin wordpress plugin, bitcoin store, BitPay, cart, checkout, e-commerce, online store, payment, payment gateway, sell, shortcode, litecoin, dogecoin, speedcoin, darkcoin, vertcoin, reddcoin, feathercoin, vericoin, potcoin
+Tags: jigoshop, jigo shop, bitcoin, bitcoins, bitcoin payment, bitcoin payments, paypal, woocommerce, osCommerce, gourl, google, bitstamp, cryptsy, jigoshop payment gateway, woocommerce payment gateway, btc, coinbase, wp ecommerce, bitpay, shopping cart, ecommerce, commerce, eshop, payment gateway, payment plugin, payment, e-commerce, ecommerce, fulfillment, woo commerce, wp e-commerce, credit, accept bitcoin, bitcoin payments, bitcoin plugin, bitcoin wordpress plugin, bitcoin store, BitPay, cart, checkout, e-commerce, online store, payment, payment gateway, sell, shortcode, litecoin, dogecoin, speedcoin, darkcoin, vertcoin, reddcoin, feathercoin, vericoin, potcoin
 Requires at least: 3.5
 Tested up to: 4.2
 Stable Tag: 1.0.0
@@ -83,5 +83,5 @@ In the search field type "GoUrl Jigoshop" and click Search Plugins. Once you've 
 
 = 1.0.0 =
 Initial Release
-  
+ 
    
