@@ -68,7 +68,7 @@ function gourl_jigoshop_gateway_load()
 			{
 				$unrecognised_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='.GOURL.'payments&s=unrecognised">'.__( 'Unrecognised', GOURLJI ).'</a>';
 				array_unshift($links, $unrecognised_link);
-				$payments_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='.GOURL.'payments&s=jigoshop">'.__( 'Payments', GOURLJI ).'</a>';
+				$payments_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='.GOURL.'payments&s=gourljigoshop">'.__( 'Payments', GOURLJI ).'</a>';
 				array_unshift($links, $payments_link);
 			}
 		}
@@ -644,5 +644,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()                 
+// end gourl_jigoshop_gateway_load()            
 
