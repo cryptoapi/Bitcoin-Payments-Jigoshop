@@ -2,8 +2,8 @@
 /*
 Plugin Name: 		GoUrl Jigoshop - Bitcoin Payment Gateway Processor
 Plugin URI: 		https://gourl.io/bitcoin-payments-jigoshop.html
-Description: 		Provides a <a href="https://gourl.io">GoUrl.io</a> Payment Gateway for Jigoshop 1.12+. Support product prices in Bitcoin/Altcoins directly and sends the amount straight to your business Bitcoin/Altcoin wallet. Convert your USD/EUR/etc prices to cryptocoins using Google/Cryptsy Exchange Rates. Direct Integration on your website, no external payment pages opens (as other payment gateways offer). Accept Bitcoin, Litecoin, Dogecoin, Speedcoin, Darkcoin, Vertcoin, Reddcoin, Feathercoin, Vericoin, Potcoin payments online. You will see the bitcoin/altcoin payment statistics in one common table on your website. No Chargebacks, Global, Secure. All in automatic mode.
-Version: 			1.0.0
+Description: 		Provides a <a href="https://gourl.io">GoUrl.io</a> Payment Gateway for Jigoshop 1.12+. Support product prices in USD/EUR/etc or in Bitcoin/Altcoins directly and sends the amount straight to your business Bitcoin/Altcoin wallet. Convert your USD/EUR/etc prices to cryptocoins using Google/Cryptsy Exchange Rates. Direct Integration on your website, no external payment pages opens (as other payment gateways offer). Accept Bitcoin, Litecoin, Dogecoin, Speedcoin, Darkcoin, Vertcoin, Reddcoin, Feathercoin, Vericoin, Potcoin payments online. You will see the bitcoin/altcoin payment statistics in one common table on your website. No Chargebacks, Global, Secure. All in automatic mode.
+Version: 			1.0.1
 Author: 			GoUrl.io
 Author URI: 		https://gourl.io
 License: 			GPLv2
@@ -227,9 +227,9 @@ function gourl_jigoshop_gateway_load()
 	    	// Requirements
 	    	if (class_exists('gourlclass') && defined('GOURL') && defined('GOURL_ADMIN') && is_object($gourl))
 	    	{
-	    		if (true === version_compare(GOURL_VERSION, '1.2.3', '<'))
+	    		if (true === version_compare(GOURL_VERSION, '1.2.6', '<'))
 	    		{
-	    			$method_description .= '<div class="error"><p>' .sprintf(__( '<b>Your GoUrl Bitcoin Gateway <a href="%s">Main Plugin</a> version is too old. Requires 1.2.3 or higher version. Please <a href="%s">update</a> to latest version.</b>  &#160; &#160; &#160; &#160; Information: &#160; <a href="https://gourl.io/bitcoin-wordpress-plugin.html">Plugin Homepage</a> &#160; &#160; &#160; <a href="https://wordpress.org/plugins/gourl-bitcoin-payment-gateway-paid-downloads-membership/">WordPress.org Plugin Page</a>', GOURLJI ), GOURL_ADMIN.GOURL, $this->mainplugin_url).'</p></div>';
+	    			$method_description .= '<div class="error"><p>' .sprintf(__( '<b>Your GoUrl Bitcoin Gateway <a href="%s">Main Plugin</a> version is too old. Requires 1.2.6 or higher version. Please <a href="%s">update</a> to latest version.</b>  &#160; &#160; &#160; &#160; Information: &#160; <a href="https://gourl.io/bitcoin-wordpress-plugin.html">Plugin Homepage</a> &#160; &#160; &#160; <a href="https://wordpress.org/plugins/gourl-bitcoin-payment-gateway-paid-downloads-membership/">WordPress.org Plugin Page</a>', GOURLJI ), GOURL_ADMIN.GOURL, $this->mainplugin_url).'</p></div>';
 	    		}
 	    		elseif (true === version_compare(JIGOSHOP_VERSION, '1.12', '<'))
 	    		{
@@ -363,39 +363,9 @@ function gourl_jigoshop_gateway_load()
 	
 		
 		
-	    /*
-	     * 5.4
-	    */
-	    public function convert_currency($from_Currency, $to_Currency, $amount) 
-		{
-		    $amount = urlencode($amount);
-		    $from_Currency = urlencode($from_Currency);
-		    $to_Currency = urlencode($to_Currency);
-		
-		    $url = "https://www.google.com/finance/converter?a=".$amount."&from=".$from_Currency."&to=".$to_Currency;
-		
-		    $ch = curl_init();
-		    $timeout = 20;
-		    curl_setopt ($ch, CURLOPT_URL, $url);
-		    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-		    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-		    curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)");
-		    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-		    curl_setopt ($ch, CURLOPT_TIMEOUT, $timeout);
-		    $rawdata = curl_exec($ch);
-		    curl_close($ch);
-		    $data = explode('bld>', $rawdata);
-		    $data = explode($to_Currency, $data[1]);
-		
-		    return round($data[0], 2);
-		}
-	    
-	    
-	    
-	    
 	    
     /*
-     * 5.5 Output for the order received page.
+     * 5.4 Output for the order received page.
      */
     public function cryptocoin_payment( $order_id )
 	{
@@ -411,9 +381,14 @@ function gourl_jigoshop_gateway_load()
 		if ($order->status == "cancelled")
 		{
 			echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
-			echo "<div class='error'>". __( 'This order&rsquo;s status is &ldquo;Cancelled&rdquo;&mdash;it cannot be paid for. Please contact us if you need assistance.', GOURLJI )."</div>";
+			echo "<div class='error'>". __( 'This order&rsquo;s status is &ldquo;Cancelled&rdquo; &mdash; it cannot be paid for. Please contact us if you need assistance.', GOURLJI )."</div>";
 		}
-		elseif (!$this->payments || !$this->defcoin || true === version_compare(JIGOSHOP_VERSION, '1.12', '<') || true === version_compare(GOURL_VERSION, '1.2.3', '<') || 
+		elseif (!class_exists('gourlclass') || !defined('GOURL') || !is_object($gourl))
+		{
+			echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
+			echo "<div class='error'>".__( "Please try a different payment method. Admin need to install and activate wordpress plugin 'GoUrl Bitcoin Gateway' (https://gourl.io/bitcoin-wordpress-plugin.html) to accept Bitcoin/Altcoin Payments online", GOURLJI )."</div>";
+		}
+		elseif (!$this->payments || !$this->defcoin || true === version_compare(JIGOSHOP_VERSION, '1.12', '<') || true === version_compare(GOURL_VERSION, '1.2.6', '<') || 
 				(array_key_exists($order_currency, $this->coin_names) && !array_key_exists($order_currency, $this->payments)))
 		{
 			echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
@@ -433,38 +408,44 @@ function gourl_jigoshop_gateway_load()
 			$crypto			= array_key_exists($currency, $this->coin_names);
 			
 			if (!$userID) $userID = "guest"; // allow guests to make checkout (payments)
-			
-			if ($currency != "USD" && !$crypto)
-			{
-				if ($currency == "TRL") $currency = "TRY"; // fix for Turkish Lyra
-				$amount = $this->convert_currency($currency, "USD", $amount);
-				if ($amount <= 0) 
-				{
-					echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
-					echo "<div class='error'>".sprintf(__( 'Sorry, but there was an error processing your order. Please try later or use a different payment method. Cannot receive exchange rates for %s/USD', GOURLJI ), $currency)."</div>";
-				}
-				$currency = "USD";
-			}
-	
-			if (!$crypto) $amount = $amount * $this->emultiplier;
 
 			
-			// Crypto Payment Box
-			if ($amount > 0)
+			if (!$userID) 
 			{
-				if (!class_exists('gourlclass') || !defined('GOURL') || !is_object($gourl)) 
+				echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
+				echo "<div align='center'><a href='".wp_login_url(get_permalink())."'>
+						<img style='border:none;box-shadow:none;' title='".__('You need to login or register on website first', GOURLJI )."' vspace='10'
+						src='".$gourl->box_image()."' border='0'></a></div>";
+			}
+			elseif ($amount <= 0)
+			{
+				echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
+				echo "<div class='error'>". sprintf(__( 'This order&rsquo;s amount is &ldquo;%s&rdquo; &mdash; it cannot be paid for. Please contact us if you need assistance.', GOURLJI ), $amount ." " . $currency)."</div>";
+			}
+			else
+			{
+				
+				// Exchange (optional)
+				// --------------------
+				if ($currency != "USD" && !$crypto)
 				{
-					echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
-					echo "<div class='error'>".__( "Please try a different payment method. Admin need to install and activate wordpress plugin 'GoUrl Bitcoin Gateway' (https://gourl.io/bitcoin-wordpress-plugin.html) to accept Bitcoin/Altcoin Payments online", GOURLJI )."</div>";
+					$amount = gourl_convert_currency($currency, "USD", $amount);
+						
+					if ($amount <= 0)
+					{
+						echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
+						echo "<div class='error'>".sprintf(__( 'Sorry, but there was an error processing your order. Please try later or use a different payment method. Cannot receive exchange rates for %s/USD from Google Finance', GOURLJI ), $currency)."</div>";
+					}
+					else $currency = "USD";
 				}
-				elseif (!$userID) 
-				{
-					echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
-					echo "<div align='center'><a href='".wp_login_url(get_permalink())."'>
-							<img title='".__('You need to login or register on website first', GOURLJI )."' vspace='10'
-							src='".plugins_url('/cryptobox_login2.png', __FILE__)."' width='527' height='242' border='0'></a></div>";
-				}
-				else 
+					
+				if (!$crypto) $amount = $amount * $this->emultiplier;
+					
+				
+					
+				// Payment Box
+				// ------------------
+				if ($amount > 0)
 				{
 					// crypto payment gateway
 					$result = $gourl->cryptopayments ($plugin, $amount, $currency, $orderID, $period, $language, $coin, $affiliate_key, $userID, $this->iconwidth);
@@ -484,9 +465,12 @@ function gourl_jigoshop_gateway_load()
 						echo $result["html_payment_box"];
 						
 						// payment received
-						if ($result["is_paid"]) echo "<div align='center'>" . sprintf( __('%s Payment ID: #%s', GOURLJI), ucfirst($result["coinname"]), $result["paymentID"]) . "</div><br>";
+						if ($result["is_paid"])
+						{ 
+							echo "<div align='center'>" . sprintf( __('%s Payment ID: #%s', GOURLJI), ucfirst($result["coinname"]), $result["paymentID"]) . "</div><br>";
+						}
 					}
-				}
+				}	
 			}
 	    }
 
@@ -500,7 +484,7 @@ function gourl_jigoshop_gateway_load()
 	
 	    
 	    /*
-	     * 5.6 Forward to checkout page
+	     * 5.5 Forward to checkout page
 	     */
 	    public function process_payment( $order_id ) 
 	    {
@@ -530,7 +514,7 @@ function gourl_jigoshop_gateway_load()
 	    
 	    
 	    /*
-	     * 5.7 GoUrl Bitcoin Gateway - Instant Payment Notification
+	     * 5.6 GoUrl Bitcoin Gateway - Instant Payment Notification
 	     */
 	    public function gourlcallback( $user_id, $order_id, $payment_details, $box_status) 
 	    {
@@ -644,5 +628,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()            
+// end gourl_jigoshop_gateway_load()             
 
