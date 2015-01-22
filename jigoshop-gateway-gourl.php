@@ -144,7 +144,6 @@ function gourl_jigoshop_gateway_load()
 	    	parent::__construct();
 	    	
 			$this->id                 	= 'gourlpayments';
-			$this->mainplugin_url 		= get_bloginfo('wpurl') . "/wp-admin/plugin-install.php?tab=search&type=term&s=GoUrl+Bitcoin+Payment+Gateway+Downloads";
 			$this->icon         	  	= plugin_dir_url( __FILE__ ).'gourlpayments.png';
 			$this->has_fields         	= false;
 
@@ -198,6 +197,8 @@ function gourl_jigoshop_gateway_load()
 	    	
 	    	$defaults 	= array();
 	    	$coins		= "";
+	    	
+	    	$this->mainplugin_url = get_bloginfo('wpurl') . "/wp-admin/plugin-install.php?tab=search&type=term&s=GoUrl+Bitcoin+Payment+Gateway+Downloads";
 	    	
 	    	if (class_exists('gourlclass') && defined('GOURL') && is_object($gourl))
 	    	{
@@ -629,5 +630,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()      
+// end gourl_jigoshop_gateway_load()       
 
