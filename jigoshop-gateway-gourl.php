@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: 		GoUrl Jigoshop - Bitcoin Payment Gateway Processor
+Plugin Name: 		GoUrl Jigoshop - Bitcoin Altcoin Payment Gateway Processor
 Plugin URI: 		https://gourl.io/bitcoin-payments-jigoshop.html
-Description: 		Provides a <a href="https://gourl.io">GoUrl.io</a> Payment Gateway for Jigoshop 1.12+. Support product prices in USD/EUR/etc or in Bitcoin/Altcoins directly and sends the amount straight to your business Bitcoin/Altcoin wallet. Convert your USD/EUR/etc prices to cryptocoins using Google/Cryptsy Exchange Rates. Direct Integration on your website, no external payment pages opens (as other payment gateways offer). Accept Bitcoin, Litecoin, Dogecoin, Speedcoin, Darkcoin, Vertcoin, Reddcoin, Feathercoin, Vericoin, Potcoin payments online. You will see the bitcoin/altcoin payment statistics in one common table on your website. No Chargebacks, Global, Secure. All in automatic mode.
-Version: 			1.0.1
+Description: 		Provides a <a href="https://gourl.io">GoUrl.io</a> Bitcoin/Altcoins Payment Gateway for <a href="https://wordpress.org/plugins/jigoshop/">Jigoshop 1.12+</a>. Support product prices in USD/EUR/etc and in Bitcoin/Altcoins directly; sends the amount straight to your business Bitcoin/Altcoin wallet. Convert your USD/EUR/etc prices to cryptocoins using Google/Cryptsy Exchange Rates. Direct Integration on your website, no external payment pages opens (as other payment gateways offer). Accept Bitcoin, Litecoin, Speedcoin, Dogecoin, Paycoin, Darkcoin, Reddcoin, Potcoin, Feathercoin, Vertcoin, Vericoin payments online. You will see the bitcoin/altcoin payment statistics in one common table on your website. No Chargebacks, Global, Secure. All in automatic mode.
+Version: 			1.0.2
 Author: 			GoUrl.io
 Author URI: 		https://gourl.io
 License: 			GPLv2
@@ -61,14 +61,14 @@ function gourl_jigoshop_gateway_load()
 		}
 	
 		if ($file == $this_plugin) {
-			$settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=jigoshop_settings&tab=payment-gateways#gourl_gateway">'.__( 'Settings', GOURLJI ).'</a>';
+			$settings_link = '<a href="'.admin_url('admin.php?page=jigoshop_settings&tab=payment-gateways#gourl_gateway').'">'.__( 'Settings', GOURLJI ).'</a>';
 			array_unshift($links, $settings_link);
 			
 			if (defined('GOURL'))
 			{
-				$unrecognised_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='.GOURL.'payments&s=unrecognised">'.__( 'Unrecognised', GOURLJI ).'</a>';
+				$unrecognised_link = '<a href="'.admin_url('admin.php?page='.GOURL.'payments&s=unrecognised').'">'.__( 'Unrecognised', GOURLJI ).'</a>';
 				array_unshift($links, $unrecognised_link);
-				$payments_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='.GOURL.'payments&s=gourljigoshop">'.__( 'Payments', GOURLJI ).'</a>';
+				$payments_link = '<a href="'.admin_url('admin.php?page='.GOURL.'payments&s=gourljigoshop').'">'.__( 'Payments', GOURLJI ).'</a>';
 				array_unshift($links, $payments_link);
 			}
 		}
@@ -168,7 +168,7 @@ function gourl_jigoshop_gateway_load()
 					
 			// Re-check
 			if (!$this->title)								$this->title 		= __('GoUrl Bitcoin/Altcoins', GOURLJI);
-			if (!$this->description)						$this->description 	= __('Pay with virtual currency', GOURLJI);
+			if (!$this->description)						$this->description 	= __('Secure, anonymous payment with virtual currency', GOURLJI);
 			if (!isset($this->statuses[$this->ostatus])) 	$this->ostatus  	= 'processing';
 			if (!isset($this->statuses[$this->ostatus2])) 	$this->ostatus2 	= 'completed';
 			if (!isset($this->languages[$this->deflang])) 	$this->deflang 		= 'en';
@@ -198,7 +198,7 @@ function gourl_jigoshop_gateway_load()
 	    	$defaults 	= array();
 	    	$coins		= "";
 	    	
-	    	$this->mainplugin_url = get_bloginfo('wpurl') . "/wp-admin/plugin-install.php?tab=search&type=term&s=GoUrl+Bitcoin+Payment+Gateway+Downloads";
+	    	$this->mainplugin_url = admin_url("plugin-install.php?tab=search&type=term&s=GoUrl+Bitcoin+Payment+Gateway+Downloads");
 	    	
 	    	if (class_exists('gourlclass') && defined('GOURL') && is_object($gourl))
 	    	{
@@ -224,14 +224,14 @@ function gourl_jigoshop_gateway_load()
 	    	$method_description  	 = "<img style='float:left; margin-right:15px' src='".plugin_dir_url( __FILE__ )."gourlpayments.png'>";
 	    	$method_description  	.= __( '<a target="_blank" href="https://gourl.io/bitcoin-payments-jigoshop.html">Plugin Homepage &#187;</a>', GOURLJI ) . "<br>";
 	    	$method_description  	.= __( '<a target="_blank" href="https://github.com/cryptoapi/Bitcoin-Payments-Jigoshop">Plugin on Github - 100% Free Open Source &#187;</a>', GOURLJI ) . "<br><br>";
-	    	$method_description  	.= sprintf(__( 'Accept %s payments online in Jigoshop.', GOURLJI ), ($this->coin_names?ucwords(implode(", ", $this->coin_names)):"Bitcoin, Litecoin, Dogecoin, Speedcoin, Darkcoin, Vertcoin, Reddcoin, Feathercoin, Vericoin, Potcoin")).'<br/>';
+	    	$method_description  	.= sprintf(__( 'Accept %s payments online in Jigoshop.', GOURLJI ), ($this->coin_names?ucwords(implode(", ", $this->coin_names)):"Bitcoin, Litecoin, Speedcoin, Dogecoin, Paycoin, Darkcoin, Reddcoin, Potcoin, Feathercoin, Vertcoin, Vericoin")).'<br/>';
 	    	
 	    	// Requirements
 	    	if (class_exists('gourlclass') && defined('GOURL') && defined('GOURL_ADMIN') && is_object($gourl))
 	    	{
-	    		if (true === version_compare(GOURL_VERSION, '1.2.6', '<'))
+	    		if (true === version_compare(GOURL_VERSION, '1.2.7', '<'))
 	    		{
-	    			$method_description .= '<div class="error"><p>' .sprintf(__( '<b>Your GoUrl Bitcoin Gateway <a href="%s">Main Plugin</a> version is too old. Requires 1.2.6 or higher version. Please <a href="%s">update</a> to latest version.</b>  &#160; &#160; &#160; &#160; Information: &#160; <a href="https://gourl.io/bitcoin-wordpress-plugin.html">Plugin Homepage</a> &#160; &#160; &#160; <a href="https://wordpress.org/plugins/gourl-bitcoin-payment-gateway-paid-downloads-membership/">WordPress.org Plugin Page</a>', GOURLJI ), GOURL_ADMIN.GOURL, $this->mainplugin_url).'</p></div>';
+	    			$method_description .= '<div class="error"><p>' .sprintf(__( '<b>Your GoUrl Bitcoin Gateway <a href="%s">Main Plugin</a> version is too old. Requires 1.2.7 or higher version. Please <a href="%s">update</a> to latest version.</b>  &#160; &#160; &#160; &#160; Information: &#160; <a href="https://gourl.io/bitcoin-wordpress-plugin.html">Plugin Homepage</a> &#160; &#160; &#160; <a href="https://wordpress.org/plugins/gourl-bitcoin-payment-gateway-paid-downloads-membership/">WordPress.org Plugin Page</a>', GOURLJI ), GOURL_ADMIN.GOURL, $this->mainplugin_url).'</p></div>';
 	    		}
 	    		elseif (true === version_compare(JIGOSHOP_VERSION, '1.12', '<'))
 	    		{
@@ -239,7 +239,7 @@ function gourl_jigoshop_gateway_load()
 	    		}
 	    		else
 	    		{
-	    			$method_description .= __( 'If you use multiple stores, please create separate <a target="_blank" href="https://gourl.io/editrecord/coin_boxes/0">GoUrl Payment Box</a> (with unique payment box public/private keys) for each of your stores/websites. Do not use the same GoUrl Payment Box with the same public/private keys on your different websites/stores.', GOURLJI );
+	    			$method_description .= __( 'If you use multiple stores/sites online, please create separate <a target="_blank" href="https://gourl.io/editrecord/coin_boxes/0">GoUrl Payment Box</a> (with unique payment box public/private keys) for each of your stores/websites. Do not use the same GoUrl Payment Box with the same public/private keys on your different websites/stores.', GOURLJI );
 	    		}
 	    		
 	    		$method_description .= '<br/><br/>';
@@ -284,7 +284,7 @@ function gourl_jigoshop_gateway_load()
 	    			'name'		=> __('Description', GOURLJI),
 	    			'desc' 		=> __( 'Payment method description that the customer will see on your checkout', GOURLJI ),
 	    			'tip' 		=> '',
-	    			'std' 		=> trim(sprintf(__( 'Pay with virtual currency - %s', GOURLJI ), $coins), " -"),
+	    			'std' 		=> trim(sprintf(__( 'Secure, anonymous payment with virtual currency - %s', GOURLJI ), $coins), " -"),
 	    			'type' 		=> 'textarea'
 	    	);
 	    
@@ -390,7 +390,7 @@ function gourl_jigoshop_gateway_load()
 			echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
 			echo "<div class='error'>".__( "Please try a different payment method. Admin need to install and activate wordpress plugin 'GoUrl Bitcoin Gateway' (https://gourl.io/bitcoin-wordpress-plugin.html) to accept Bitcoin/Altcoin Payments online", GOURLJI )."</div>";
 		}
-		elseif (!$this->payments || !$this->defcoin || true === version_compare(JIGOSHOP_VERSION, '1.12', '<') || true === version_compare(GOURL_VERSION, '1.2.6', '<') || 
+		elseif (!$this->payments || !$this->defcoin || true === version_compare(JIGOSHOP_VERSION, '1.12', '<') || true === version_compare(GOURL_VERSION, '1.2.7', '<') || 
 				(array_key_exists($order_currency, $this->coin_names) && !array_key_exists($order_currency, $this->payments)))
 		{
 			echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
@@ -416,7 +416,7 @@ function gourl_jigoshop_gateway_load()
 			{
 				echo '<h2>' . __( 'Information', GOURLJI ) . '</h2>' . PHP_EOL;
 				echo "<div align='center'><a href='".wp_login_url(get_permalink())."'>
-						<img style='border:none;box-shadow:none;' title='".__('You need to login or register on website first', GOURLJI )."' vspace='10'
+						<img style='border:none;box-shadow:none;' title='".__('You need first to login or register on the website to make Bitcoin/Altcoin Payments', GOURLJI )."' vspace='10'
 						src='".$gourl->box_image()."' border='0'></a></div>";
 			}
 			elseif ($amount <= 0)
@@ -503,7 +503,8 @@ function gourl_jigoshop_gateway_load()
 	    	$checkout_redirect = apply_filters( 'jigoshop_get_checkout_redirect_page_id', jigoshop_get_page_id('thanks') );
 			$url = add_query_arg( 'key', $order->order_key, add_query_arg( 'order', $order->id, get_permalink( $checkout_redirect ) ) );
 	    	
-	    	$order->add_order_note(sprintf(__('Awaiting Cryptocurrency Payment. Full Order ID: <b>%s</b> with total %s', GOURLJI), 'order'.$order->id.'_'.str_replace('order_', '', $order->order_key), $order->order_total . " " . $currency));
+			$user = (!$order->user_id) ? __('Guest', GOURLJI) : "<a href='".htmlspecialchars("user-edit.php?user_id=".$order->user_id, ENT_QUOTES)."'>user".$order->user_id."</a>";
+			$order->add_order_note(sprintf(__('Order Created by %s<br>Full Order ID: <b>%s</b> with total %s<br>Awaiting Cryptocurrency Payment ...', GOURLJI), $user, 'order'.$order->id.'_'.str_replace('order_', '', $order->order_key), $order->order_total . " " . $currency));
 	    	
 	    	return array(
 	    			'result' 	=> 'success',
@@ -630,5 +631,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()       
+// end gourl_jigoshop_gateway_load()   
 
