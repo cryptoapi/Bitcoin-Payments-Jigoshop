@@ -2,8 +2,8 @@
 /*
 Plugin Name: 		GoUrl Jigoshop - Bitcoin Altcoin Payment Gateway Processor
 Plugin URI: 		https://gourl.io/bitcoin-payments-jigoshop.html
-Description: 		Provides a <a href="https://gourl.io">GoUrl.io</a> Bitcoin/Altcoin Payment Gateway for <a href="https://wordpress.org/plugins/jigoshop/">Jigoshop 1.12+</a>. Support product prices in USD/EUR/etc and in Bitcoin/Altcoins directly; sends the amount straight to your business Bitcoin/Altcoin wallet. Convert your USD/EUR/etc prices to cryptocoins using Google/Cryptsy Exchange Rates. Direct Integration on your website, no external payment pages opens (as other payment gateways offer). Accept Bitcoin, Litecoin, Paycoin, Dogecoin, Dash, Speedcoin, Reddcoin, Potcoin, Feathercoin, Vertcoin, Vericoin, Peercoin, MonetaryUnit payments online. You will see the bitcoin/altcoin payment statistics in one common table on your website. No Chargebacks, Global, Secure. All in automatic mode.
-Version: 			1.1.1
+Description: 		Provides a <a href="https://gourl.io">GoUrl.io</a> Bitcoin/Altcoin Payment Gateway for <a href="https://wordpress.org/plugins/jigoshop/">Jigoshop 1.12+</a>. Support product prices in USD/EUR/etc and in Bitcoin/Altcoins directly; sends the amount straight to your business Bitcoin/Altcoin wallet. Convert your USD/EUR/etc prices to cryptocoins using Google/Poloniex Exchange Rates. Direct Integration on your website, no external payment pages opens (as other payment gateways offer). Accept Bitcoin, BitcoinCash, Litecoin, Dash, Dogecoin, Speedcoin, Reddcoin, Potcoin, Feathercoin, Vertcoin, Peercoin, MonetaryUnit payments online. You will see the bitcoin/altcoin payment statistics in one common table on your website. No Chargebacks, Global, Secure. All in automatic mode.
+Version: 			1.1.2
 Author: 			GoUrl.io
 Author URI: 		https://gourl.io
 License: 			GPLv2
@@ -224,7 +224,7 @@ function gourl_jigoshop_gateway_load()
 	    	$method_description  	 = "<img style='float:left; margin-right:15px' src='".plugin_dir_url( __FILE__ )."gourlpayments.png'>";
 	    	$method_description  	.= __( '<a target="_blank" href="https://gourl.io/bitcoin-payments-jigoshop.html">Plugin Homepage &#187;</a>', GOURLJI ) . "<br>";
 	    	$method_description  	.= __( '<a target="_blank" href="https://github.com/cryptoapi/Bitcoin-Payments-Jigoshop">Plugin on Github - 100% Free Open Source &#187;</a>', GOURLJI ) . "<br><br>";
-	    	$method_description  	.= sprintf(__( 'Accept %s payments online in Jigoshop.', GOURLJI ), ($this->coin_names?ucwords(implode(", ", $this->coin_names)):"Bitcoin, Litecoin, Paycoin, Dogecoin, Dash, Speedcoin, Reddcoin, Potcoin, Feathercoin, Vertcoin, Vericoin, Peercoin, MonetaryUnit")).'<br/>';
+	    	$method_description  	.= sprintf(__( 'Accept %s payments online in Jigoshop.', GOURLJI ), ($this->coin_names?ucwords(implode(", ", $this->coin_names)):"Bitcoin, BitcoinCash, Litecoin, Dash, Dogecoin, Speedcoin, Reddcoin, Potcoin, Feathercoin, Vertcoin, Peercoin, MonetaryUnit")).'<br/>';
 	    	
 	    	// Requirements
 	    	if (class_exists('gourlclass') && defined('GOURL') && defined('GOURL_ADMIN') && is_object($gourl))
@@ -631,5 +631,5 @@ function gourl_jigoshop_gateway_load()
 
 
 }
-// end gourl_jigoshop_gateway_load()      
+// end gourl_jigoshop_gateway_load()       
 
